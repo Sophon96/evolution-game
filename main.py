@@ -7,8 +7,7 @@ pygame.init()
 # ConstantFMos
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
-DAYS = 0
-MUTATION_PERCENTAGE = .10
+MUTATION_PERCENTAGE = 0.10
 
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
@@ -16,7 +15,15 @@ pygame.display.set_caption("The Evolution Game")
 
 class Blob:
     def __init__(
-            self, x, y, speed=20, num_days_without_food=1, sense=30, num_babies=1, lifespan=5, food_consumed=0
+        self,
+        x,
+        y,
+        speed=20,
+        num_days_without_food=1,
+        sense=30,
+        num_babies=1,
+        lifespan=5,
+        food_consumed=0,
     ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
@@ -27,18 +34,15 @@ class Blob:
         self.x = x
         self.y = y
 
-    def setFoodConsumed(self):
-        self.food_consumed += 1
-
     def __repr__(self):
         return (
             f"Blob({self.x}, {self.y}, {self.speed}, {self.num_days_without_food}, {self.sense},"
             f"{self.num_babies}, {self.lifespan})"
         )
 
-    def makeBaby(self):
-        Baby_X_Cord = self.x
-        Baby_Y_Cord = self.y
+    def make_baby(self):
+        baby_x_cord = self.x
+        baby_y_cord = self.y
 
         # for now stay the same
         baby_num_days_without_food = self.num_days_without_food
@@ -58,8 +62,15 @@ class Blob:
         if baby_sense_probability < 1:
             baby_sense = self.sense / (1 + MUTATION_PERCENTAGE)
 
-        return Blob(Baby_X_Cord, Baby_Y_Cord, baby_speed, baby_num_days_without_food, baby_sense, baby_num_babies,
-                    baby_life_span)
+        return Blob(
+            baby_x_cord,
+            baby_y_cord,
+            baby_speed,
+            baby_num_days_without_food,
+            baby_sense,
+            baby_num_babies,
+            baby_life_span,
+        )
 
     def blit(self):
         global screen
@@ -77,16 +88,18 @@ class Food:
 
 
 def distance(blob_x, blob_y, food_x, food_y):
-    return math.sqrt(
-        (food_x - blob_x) ** 2 + (food_y - blob_y) ** 2
-    )
+    return math.sqrt((food_x - blob_x) ** 2 + (food_y - blob_y) ** 2)
 
 
-blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(10)]
-foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+blobs: list[Blob] = [
+    Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(10)
+]
+foods: list[Food] = [
+    Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)
+]
 
 clock = pygame.time.Clock()
-
+days = 0
 running = True
 while running:
     clock.tick(60)
@@ -123,23 +136,24 @@ while running:
 
         for d in foods:
             if distance(c.x, c.y, d.x, d.y) < c.sense:
-                c.setFoodConsumed()
+                c.food_consumed += 1
                 foods.remove(d)
         if len(foods) == 0:
             for e in blobs:
-                foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
                 if e.food_consumed < 1:
                     e.food_consumed = 0
                     blobs.remove(e)
                 if e.food_consumed == 1:
                     e.food_consumed = 0
                 if e.food_consumed > 1:
-                    Baby_Blob = e.makeBaby()
+                    Baby_Blob = e.make_baby()
                     blobs.append(Baby_Blob)
                     e.food_consumed = 0
 
-
-            DAYS += 1
+            foods: list[Food] = [
+                Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)
+            ]
+            days += 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -149,5 +163,3 @@ while running:
             break
 
     pygame.display.update()
-
-
