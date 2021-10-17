@@ -5,8 +5,8 @@ import math
 pygame.init()
 
 # Constants
-FOOD_PIC = pygame.image.load("food - Copy.png")
-BLOB_PIC = pygame.image.load("blob - Copy.png")
+FOOD_PIC = pygame.image.load("assets/food.png")
+BLOB_PIC = pygame.image.load("assets/blob.png")
 MOVEMENT = 5.00
 
 screen = pygame.display.set_mode((900, 800))
