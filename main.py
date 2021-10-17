@@ -7,7 +7,7 @@ pygame.init()
 # Constants
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
-MOVEMENT = 5.00
+MOVEMENT = 10.00
 
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
@@ -52,7 +52,7 @@ def distance(blob_x, blob_y, food_x, food_y):
     )
 
 
-blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(10)]
 foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
 
 clock = pygame.time.Clock()
@@ -92,8 +92,10 @@ while running:
             c.y = 0
 
         for d in foods:
-            if distance(c.x, c.y, d.x, d.y) < 8:
+            if distance(c.x, c.y, d.x, d.y) < 20:
                 foods.remove(d)
+        if len(foods) == 0:
+            foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
