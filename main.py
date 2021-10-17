@@ -8,7 +8,7 @@ pygame.init()
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
 DAYS = 0
-MUTATION_PERCENTAGE = 10.00
+MUTATION_PERCENTAGE = .10
 
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
@@ -16,15 +16,19 @@ pygame.display.set_caption("The Evolution Game")
 
 class Blob:
     def __init__(
-            self, x, y, speed=10, num_days_without_food=1, sense=50, num_babies=1, lifespan=5
+            self, x, y, speed=20, num_days_without_food=1, sense=50, num_babies=1, lifespan=5, food_consumed=0
     ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
         self.sense = sense
         self.speed = speed
         self.lifespan = lifespan
+        self.food_consumed = food_consumed
         self.x = x
         self.y = y
+
+    def setFoodConsumed(self):
+        self.food_consumed += 1
 
     def __repr__(self):
         return (
@@ -32,7 +36,7 @@ class Blob:
             f"{self.num_babies}, {self.lifespan})"
         )
 
-    def makeBaby(self, max_mutation_percentage):
+    def makeBaby(self):
         Baby_X_Cord = self.x
         Baby_Y_Cord = self.y
 
@@ -43,16 +47,17 @@ class Blob:
 
         # baby speed
         baby_speed = 10
+        baby_sense = 10
         baby_speed_probability = random.randint(0, 2)
         if baby_speed_probability > 1:
-            baby_speed = self.speed * (1 + max_mutation_percentage)
+            baby_speed = self.speed * (1 + MUTATION_PERCENTAGE)
         if baby_speed_probability < 1:
-            baby_speed = self.speed / (1 + max_mutation_percentage)
+            baby_speed = self.speed / (1 + MUTATION_PERCENTAGE)
         baby_sense_probability = random.randint(0, 2)
         if baby_sense_probability > 1:
-            baby_sense = self.sense * (1 + max_mutation_percentage)
+            baby_sense = self.sense * (1 + MUTATION_PERCENTAGE)
         if baby_sense_probability < 1:
-            baby_sense = self.sense / (1 + max_mutation_percentage)
+            baby_sense = self.sense / (1 + MUTATION_PERCENTAGE)
 
         return Blob(Baby_X_Cord, Baby_Y_Cord, baby_speed, baby_num_days_without_food, baby_sense, baby_num_babies,
                     baby_life_span)
@@ -118,12 +123,20 @@ while running:
             c.y = 0
 
         for d in foods:
-            if distance(c.x, c.y, d.x, d.y) < 150:
+            if distance(c.x, c.y, d.x, d.y) < 30:
+                c.setFoodConsumed()
                 foods.remove(d)
         if len(foods) == 0:
             for e in blobs:
                 print(e.__repr__())
             foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+            if e.food_consumed < 1:
+                blobs.remove(e)
+            if e.food_consumed == 1:
+                continue
+            if e.food_consumed > 1:
+                Baby_Blob = e.makeBaby()
+                blobs.append(Baby_Blob)
             DAYS += 1
             print(DAYS)
 
