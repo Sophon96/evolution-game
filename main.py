@@ -4,42 +4,34 @@ import math
 
 
 class Blob:
-    def __init__(self, X, Y, Speed=4, NumDaysWithoutFood=1, Sense=3, NumBabies=1, Lifespan=5):
-        self.NumBabies = 1
-        self.NumDaysWithoutFood = 1
-        self.Sense = 3
-        self.Speed = 5
-        self.Lifespan = 5
-        self.X = X
-        self.Y = Y
+    def __init__(
+            self,
+            x,
+            y,
+            speed=4,
+            num_days_without_food=1,
+            sense=3,
+            num_babies=1,
+            lifespan=5):
+        self.num_babies = num_babies
+        self.num_days_without_food = num_days_without_food
+        self.sense = sense
+        self.speed = speed
+        self.lifespan = lifespan
+        self.x = x
+        self.y = y
 
-    # getters
-    def getSpeed(self):
-        return self.Speed
+    def __repr__(self):
+        return f'Blob({self.x}, {self.y}, {self.speed}, {self.num_days_without_food}, {self.sense},' \
+               f'{self.num_babies}, {self.lifespan})'
 
-    def getNumdaysWithoutFood(self):
-        return self.NumDaysWithoutFood
-
-    def getSense(self):
-        return self.Sense
-
-    def getNumBabies(self):
-        return self.NumBabies
-
-    def getLifeSpan(self):
-        return self.Lifespan
-
-    def toString(self):
-        print(self.getSense())
-        print(self.getSpeed())
-        print(self.getNumBabies())
-        print(self.getNumdaysWithoutFood())
-        print(self.getLifeSpan())
 
 class Food:
-    def __init__(self, X, Y):
-        self.X = X
-        self.Y = Y
+    def __init__(self, x, y):
+        self.X = x
+        self.Y = y
+
+
 pygame.init()
 pygame.display.init()
 Screen = pygame.display.set_mode((900, 800))
@@ -48,39 +40,45 @@ FoodPic = pygame.image.load('food - Copy.png')
 BlobPic = pygame.image.load('blob - Copy.png')
 
 
-def makeBlobPic(x, y):
+def make_blob_pic(x, y):
     Screen.blit(BlobPic, (x, y))
 
 
-def makeFoodPic(x, y):
+def make_food_pic(x, y):
     Screen.blit(FoodPic, (x, y))
 
-TheBlobs = []
-def makeBlobs():
 
+TheBlobs = []
+
+
+def make_blobs():
     for x in range(1, 10):
-        xPosition = random.randint(50, 850)
-        yPosition = random.randint(50, 750)
-        TheBlobs.append(Blob(xPosition, yPosition))
+        x_position = random.randint(50, 850)
+        y_position = random.randint(50, 750)
+        TheBlobs.append(Blob(x_position, y_position))
+
 
 TheFoods = []
-def makeFood():
 
+
+def make_food():
     for x in range(9):
-        xPosition = random.randint(50, 850)
-        yPosition = random.randint(50, 750)
-        TheFoods.append(Food(xPosition,yPosition))
-makeFood()
-makeBlobs()
+        x_position = random.randint(50, 850)
+        y_position = random.randint(50, 750)
+        TheFoods.append(Food(x_position, y_position))
+
+
+make_food()
+make_blobs()
 running = True
 while running:
     Screen.fill((0, 0, 0))
 
     Screen.blit(BlobPic, (0, 0))
     for a in TheBlobs:
-        makeBlobPic(a.X, a.Y)
+        make_blob_pic(a.X, a.Y)
     for b in TheFoods:
-        makeFoodPic(b.X, b.Y)
+        make_food_pic(b.X, b.Y)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
