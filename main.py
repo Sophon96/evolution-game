@@ -8,6 +8,7 @@ pygame.init()
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
 MOVEMENT = 10.00
+DAYS = 0
 
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
@@ -15,7 +16,7 @@ pygame.display.set_caption("The Evolution Game")
 
 class Blob:
     def __init__(
-        self, x, y, speed=4, num_days_without_food=1, sense=3, num_babies=1, lifespan=5
+            self, x, y, speed=4, num_days_without_food=1, sense=3, num_babies=1, lifespan=5
     ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
@@ -95,7 +96,10 @@ while running:
             if distance(c.x, c.y, d.x, d.y) < 20:
                 foods.remove(d)
         if len(foods) == 0:
+            for e in blobs:
+                print(e.__repr__())
             foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+            DAYS += DAYS
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
