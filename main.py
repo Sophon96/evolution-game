@@ -16,7 +16,7 @@ pygame.display.set_caption("The Evolution Game")
 
 class Blob:
     def __init__(
-            self, x, y, speed=20, num_days_without_food=1, sense=50, num_babies=1, lifespan=5, food_consumed=0
+            self, x, y, speed=20, num_days_without_food=1, sense=30, num_babies=1, lifespan=5, food_consumed=0
     ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
@@ -51,12 +51,12 @@ class Blob:
         if baby_speed_probability > 1:
             baby_speed = self.speed * (1 + MUTATION_PERCENTAGE)
         if baby_speed_probability < 1:
-            baby_speed = self.speed * (1 + MUTATION_PERCENTAGE)
+            baby_speed = self.speed / (1 + MUTATION_PERCENTAGE)
         baby_sense_probability = random.randint(0, 2)
         if baby_sense_probability > 1:
             baby_sense = self.sense * (1 + MUTATION_PERCENTAGE)
         if baby_sense_probability < 1:
-            baby_sense = self.sense * (1 + MUTATION_PERCENTAGE)
+            baby_sense = self.sense / (1 + MUTATION_PERCENTAGE)
 
         return Blob(Baby_X_Cord, Baby_Y_Cord, baby_speed, baby_num_days_without_food, baby_sense, baby_num_babies,
                     baby_life_span)
@@ -122,7 +122,7 @@ while running:
             c.y = 0
 
         for d in foods:
-            if distance(c.x, c.y, d.x, d.y) < 30:
+            if distance(c.x, c.y, d.x, d.y) < c.sense:
                 c.setFoodConsumed()
                 foods.remove(d)
         if len(foods) == 0:
@@ -138,13 +138,16 @@ while running:
                     blobs.append(Baby_Blob)
                     e.food_consumed = 0
 
-                print(e.speed)
+
             DAYS += 1
-            print(DAYS)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            for LOL in blobs:
+                print(LOL.__repr__())
             running = False
             break
 
     pygame.display.update()
+
+
