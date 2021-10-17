@@ -44,20 +44,19 @@ class Blob:
         baby_num_days_without_food = self.num_days_without_food
         baby_num_babies = self.num_babies
         baby_life_span = self.lifespan
-
+        baby_speed = self.speed
+        baby_sense = self.speed
         # baby speed
-        baby_speed = 10
-        baby_sense = 10
         baby_speed_probability = random.randint(0, 2)
         if baby_speed_probability > 1:
             baby_speed = self.speed * (1 + MUTATION_PERCENTAGE)
         if baby_speed_probability < 1:
-            baby_speed = self.speed / (1 + MUTATION_PERCENTAGE)
+            baby_speed = self.speed * (1 + MUTATION_PERCENTAGE)
         baby_sense_probability = random.randint(0, 2)
         if baby_sense_probability > 1:
             baby_sense = self.sense * (1 + MUTATION_PERCENTAGE)
         if baby_sense_probability < 1:
-            baby_sense = self.sense / (1 + MUTATION_PERCENTAGE)
+            baby_sense = self.sense * (1 + MUTATION_PERCENTAGE)
 
         return Blob(Baby_X_Cord, Baby_Y_Cord, baby_speed, baby_num_days_without_food, baby_sense, baby_num_babies,
                     baby_life_span)
@@ -128,15 +127,18 @@ while running:
                 foods.remove(d)
         if len(foods) == 0:
             for e in blobs:
-                print(e.__repr__())
-            foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
-            if e.food_consumed < 1:
-                blobs.remove(e)
-            if e.food_consumed == 1:
-                continue
-            if e.food_consumed > 1:
-                Baby_Blob = e.makeBaby()
-                blobs.append(Baby_Blob)
+                foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+                if e.food_consumed < 1:
+                    e.food_consumed = 0
+                    blobs.remove(e)
+                if e.food_consumed == 1:
+                    e.food_consumed = 0
+                if e.food_consumed > 1:
+                    Baby_Blob = e.makeBaby()
+                    blobs.append(Baby_Blob)
+                    e.food_consumed = 0
+
+                print(e.speed)
             DAYS += 1
             print(DAYS)
 
