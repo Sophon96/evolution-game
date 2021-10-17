@@ -2,17 +2,21 @@ import pygame
 import random
 import math
 
+pygame.init()
+
+# Constants
+FOOD_PIC = pygame.image.load("food - Copy.png")
+BLOB_PIC = pygame.image.load("blob - Copy.png")
+MOVEMENT = 5.00
+
+screen = pygame.display.set_mode((900, 800))
+pygame.display.set_caption("The Evolution Game")
+
 
 class Blob:
     def __init__(
-            self,
-            x,
-            y,
-            speed=4,
-            num_days_without_food=1,
-            sense=3,
-            num_babies=1,
-            lifespan=5):
+        self, x, y, speed=4, num_days_without_food=1, sense=3, num_babies=1, lifespan=5
+    ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
         self.sense = sense
@@ -22,102 +26,97 @@ class Blob:
         self.y = y
 
     def __repr__(self):
-        return f'Blob({self.x}, {self.y}, {self.speed}, {self.num_days_without_food}, {self.sense},' \
-               f'{self.num_babies}, {self.lifespan})'
+        return (
+            f"Blob({self.x}, {self.y}, {self.speed}, {self.num_days_without_food}, {self.sense},"
+            f"{self.num_babies}, {self.lifespan})"
+        )
 
 
 class Food:
     def __init__(self, x, y):
-        self.X = x
-        self.Y = y
-
-
-# MAIN VARIABLES
-Movement = 5.00
-
-pygame.init()
-pygame.display.init()
-Screen = pygame.display.set_mode((900, 800))
-pygame.display.set_caption("The Evolution Game")
-FoodPic = pygame.image.load('food - Copy.png')
-BlobPic = pygame.image.load('blob - Copy.png')
+        self.x = x
+        self.y = y
 
 
 def make_blob_pic(x, y):
-    Screen.blit(BlobPic, (x, y))
+    screen.blit(BLOB_PIC, (x, y))
 
 
 def make_food_pic(x, y):
-    Screen.blit(FoodPic, (x, y))
+    screen.blit(FOOD_PIC, (x, y))
 
 
-TheBlobs = []
+blobs: list[Blob] = []
 
 
 def make_blobs():
     for x in range(1, 10):
         x_position = random.randint(50, 850)
         y_position = random.randint(50, 750)
-        TheBlobs.append(Blob(x_position, y_position))
+        blobs.append(Blob(x_position, y_position))
 
 
-TheFoods = []
+foods: list[Food] = []
 
 
-def distance(theblobX, theblobY, thefoodX, thefoodY):
-    return math.sqrt(math.pow(thefoodX - theblobX, 2) + math.pow(thefoodY - theblobY, 2))
+def distance(theblob_x, theblob_y, thefood_x, thefood_y):
+    return math.sqrt(
+        (thefood_x - theblob_x)**2 + (thefood_y - theblob_y)**2
+    )
 
 
 def make_food():
     for x in range(9):
         x_position = random.randint(50, 850)
         y_position = random.randint(50, 750)
-        TheFoods.append(Food(x_position, y_position))
+        foods.append(Food(x_position, y_position))
 
 
 make_food()
 make_blobs()
 running = True
 while running:
-    Screen.fill((0, 0, 0))
+    screen.fill((0, 0, 0))
 
-    Screen.blit(BlobPic, (0, 0))
-    for a in TheBlobs:
-        make_blob_pic(a.X, a.Y)
-    for b in TheFoods:
-        make_food_pic(b.X, b.Y)
+    for a in blobs:
+        make_blob_pic(a.x, a.y)
+    for b in foods:
+        make_food_pic(b.x, b.y)
 
-    for c in TheBlobs:
-        xPosition2 = c.getX()
-        yPosition2 = c.getY()
+    for c in blobs:
+        x_position_2 = c.x
+        y_position_2 = c.y
 
-        XheadsTails = random.randint(0, 2)
-        YheadsTails = random.randint(0, 2)
-        if XheadsTails > 1:
-            xPosition2 += Movement
-        if XheadsTails < 1:
-            xPosition2 -= Movement
-        if YheadsTails > 1:
-            yPosition2 += Movement
-        if YheadsTails < 1:
-            yPosition2 -= Movement
-        if xPosition2 > 850:
-            xPosition2 = 850
-        if xPosition2 < 0:
-            xPosition2 = 0
-        if yPosition2 > 750:
-            yPosition2 = 750
-        if yPosition2 < 0:
-            yPosition2 = 0
-        for d in TheFoods:
+        x_heads_tails = random.randint(0, 2)
+        y_heads_tails = random.randint(0, 2)
+        if x_heads_tails > 1:
+            x_position_2 += MOVEMENT
+        if x_heads_tails < 1:
+            x_position_2 -= MOVEMENT
+        if y_heads_tails > 1:
+            y_position_2 += MOVEMENT
+        if y_heads_tails < 1:
+            y_position_2 -= MOVEMENT
+        if x_position_2 > 850:
+            x_position_2 = 850
+        if x_position_2 < 0:
+            x_position_2 = 0
+        if y_position_2 > 750:
+            y_position_2 = 750
+        if y_position_2 < 0:
+            y_position_2 = 0
+
+        for d in foods:
             i = 0
-            if distance(xPosition2, yPosition2, d.getX(),d.getY()) < 8:
-                TheFoods.pop(i)
-        c.setX(xPosition2)
-        c.setY(yPosition2)
+            if distance(x_position_2, y_position_2, d.x, d.y) < 8:
+                foods.pop(i)
+
+        c.x = x_position_2
+        c.y = y_position_2
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        continue
+            break
+
     pygame.display.update()
