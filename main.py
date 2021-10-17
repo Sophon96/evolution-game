@@ -32,6 +32,9 @@ class Food:
         self.Y = y
 
 
+# MAIN VARIABLES
+Movement = 5.00
+
 pygame.init()
 pygame.display.init()
 Screen = pygame.display.set_mode((900, 800))
@@ -61,6 +64,10 @@ def make_blobs():
 TheFoods = []
 
 
+def distance(theblobX, theblobY, thefoodX, thefoodY):
+    return math.sqrt(math.pow(thefoodX - theblobX, 2) + math.pow(thefoodY - theblobY, 2))
+
+
 def make_food():
     for x in range(9):
         x_position = random.randint(50, 850)
@@ -79,6 +86,36 @@ while running:
         make_blob_pic(a.X, a.Y)
     for b in TheFoods:
         make_food_pic(b.X, b.Y)
+
+    for c in TheBlobs:
+        xPosition2 = c.getX()
+        yPosition2 = c.getY()
+
+        XheadsTails = random.randint(0, 2)
+        YheadsTails = random.randint(0, 2)
+        if XheadsTails > 1:
+            xPosition2 += Movement
+        if XheadsTails < 1:
+            xPosition2 -= Movement
+        if YheadsTails > 1:
+            yPosition2 += Movement
+        if YheadsTails < 1:
+            yPosition2 -= Movement
+        if xPosition2 > 850:
+            xPosition2 = 850
+        if xPosition2 < 0:
+            xPosition2 = 0
+        if yPosition2 > 750:
+            yPosition2 = 750
+        if yPosition2 < 0:
+            yPosition2 = 0
+        for d in TheFoods:
+            i = 0
+            if distance(xPosition2, yPosition2, d.getX(),d.getY()) < 8:
+                TheFoods.pop(i)
+        c.setX(xPosition2)
+        c.setY(yPosition2)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
