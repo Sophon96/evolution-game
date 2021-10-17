@@ -55,9 +55,12 @@ def distance(blob_x, blob_y, food_x, food_y):
 blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
 foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
 
+clock = pygame.time.Clock()
 
 running = True
 while running:
+    clock.tick(60)
+
     screen.fill((0, 0, 0))
 
     for a in blobs:
