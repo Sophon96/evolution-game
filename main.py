@@ -31,88 +31,66 @@ class Blob:
             f"{self.num_babies}, {self.lifespan})"
         )
 
+    def blit(self):
+        global screen
+        screen.blit(BLOB_PIC, (self.x, self.y))
+
 
 class Food:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-
-def make_blob_pic(x, y):
-    screen.blit(BLOB_PIC, (x, y))
-
-
-def make_food_pic(x, y):
-    screen.blit(FOOD_PIC, (x, y))
+    def blit(self):
+        global screen
+        screen.blit(FOOD_PIC, (self.x, self.y))
 
 
-blobs: list[Blob] = []
-
-
-def make_blobs():
-    for x in range(1, 10):
-        x_position = random.randint(50, 850)
-        y_position = random.randint(50, 750)
-        blobs.append(Blob(x_position, y_position))
-
-
-foods: list[Food] = []
-
-
-def distance(theblob_x, theblob_y, thefood_x, thefood_y):
+def distance(blob_x, blob_y, food_x, food_y):
     return math.sqrt(
-        (thefood_x - theblob_x)**2 + (thefood_y - theblob_y)**2
+        (food_x - blob_x) ** 2 + (food_y - blob_y) ** 2
     )
 
 
-def make_food():
-    for x in range(9):
-        x_position = random.randint(50, 850)
-        y_position = random.randint(50, 750)
-        foods.append(Food(x_position, y_position))
+blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
 
 
-make_food()
-make_blobs()
 running = True
 while running:
     screen.fill((0, 0, 0))
 
     for a in blobs:
-        make_blob_pic(a.x, a.y)
+        a.blit()
+
     for b in foods:
-        make_food_pic(b.x, b.y)
+        b.blit()
 
     for c in blobs:
-        x_position_2 = c.x
-        y_position_2 = c.y
-
         x_heads_tails = random.randint(0, 2)
-        y_heads_tails = random.randint(0, 2)
         if x_heads_tails > 1:
-            x_position_2 += MOVEMENT
-        if x_heads_tails < 1:
-            x_position_2 -= MOVEMENT
+            c.x += MOVEMENT
+        elif x_heads_tails < 1:
+            c.x -= MOVEMENT
+
+        y_heads_tails = random.randint(0, 2)
         if y_heads_tails > 1:
-            y_position_2 += MOVEMENT
+            c.y += MOVEMENT
         if y_heads_tails < 1:
-            y_position_2 -= MOVEMENT
-        if x_position_2 > 850:
-            x_position_2 = 850
-        if x_position_2 < 0:
-            x_position_2 = 0
-        if y_position_2 > 750:
-            y_position_2 = 750
-        if y_position_2 < 0:
-            y_position_2 = 0
+            c.y -= MOVEMENT
+
+        if c.x > 850:
+            c.x = 850
+        if c.x < 0:
+            c.x = 0
+        if c.y > 750:
+            c.y = 750
+        if c.y < 0:
+            c.y = 0
 
         for d in foods:
-            i = 0
-            if distance(x_position_2, y_position_2, d.x, d.y) < 8:
-                foods.pop(i)
-
-        c.x = x_position_2
-        c.y = y_position_2
+            if distance(c.x, c.y, d.x, d.y) < 8:
+                foods.remove(d)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
