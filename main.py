@@ -1,6 +1,10 @@
 import pygame
 import random
 import math
+import logging
+
+logging.basicConfig(filename='log_info.log', level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 pygame.init()
 
@@ -16,7 +20,8 @@ pygame.display.set_caption("The Evolution Game")
 
 class Blob:
     def __init__(
-            self, x, y, speed=20, num_days_without_food=1, sense=30, num_babies=1, lifespan=5, food_consumed=0
+            self, x, y, speed=20, num_days_without_food=1, sense=30, num_babies=1, lifespan=5, food_consumed=0,
+            days_alive=0
     ):
         self.num_babies = num_babies
         self.num_days_without_food = num_days_without_food
@@ -26,6 +31,7 @@ class Blob:
         self.food_consumed = food_consumed
         self.x = x
         self.y = y
+        self.days_alive = days_alive
 
     def setFoodConsumed(self):
         self.food_consumed += 1
@@ -84,28 +90,27 @@ def distance(blob_x, blob_y, food_x, food_y):
 
 blobs: list[Blob] = [Blob(random.randint(50, 850), random.randint(50, 750)) for _ in range(10)]
 foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
+logging.info("Arrays of blobs + foods created")
 
 clock = pygame.time.Clock()
 
 running = True
+logging.info("creating game loops")
 while running:
     clock.tick(60)
 
     screen.fill((0, 0, 0))
-
     for a in blobs:
         a.blit()
 
     for b in foods:
         b.blit()
-
     for c in blobs:
         x_heads_tails = random.randint(0, 2)
         if x_heads_tails > 1:
             c.x += c.speed
         elif x_heads_tails < 1:
             c.x -= c.speed
-
         y_heads_tails = random.randint(0, 2)
         if y_heads_tails > 1:
             c.y += c.speed
@@ -120,7 +125,6 @@ while running:
             c.y = 750
         if c.y < 0:
             c.y = 0
-
         for d in foods:
             if distance(c.x, c.y, d.x, d.y) < c.sense:
                 c.setFoodConsumed()
@@ -128,26 +132,31 @@ while running:
         if len(foods) == 0:
             for e in blobs:
                 foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
-                if e.food_consumed < 1:
-                    e.food_consumed = 0
+                #if e.food_consumed < 1:
+                #    e.food_consumed = 0
+                 #   logging.info("Killing Blob (Reason: Starvation)")
+                 #   blobs.remove(e)
+                e.days_alive +=1
+                print(e.days_alive)
+                if e.days_alive > e.lifespan:
+                    logging.info("Killing Blob (Reason: Old Age)")
                     blobs.remove(e)
                 if e.food_consumed == 1:
                     e.food_consumed = 0
                 if e.food_consumed > 1:
                     Baby_Blob = e.makeBaby()
+                    logging.info("Generating New Blob")
                     blobs.append(Baby_Blob)
                     e.food_consumed = 0
-
-
+            logging.info(DAYS)
             DAYS += 1
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            logging.info("FINAL BLOBS: ")
             for LOL in blobs:
-                print(LOL.__repr__())
+                logging.info(LOL.__repr__())
             running = False
             break
 
     pygame.display.update()
-
-
