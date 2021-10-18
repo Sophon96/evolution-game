@@ -132,12 +132,11 @@ while running:
         if len(foods) == 0:
             for e in blobs:
                 foods: list[Food] = [Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
-                #if e.food_consumed < 1:
-                #    e.food_consumed = 0
-                 #   logging.info("Killing Blob (Reason: Starvation)")
-                 #   blobs.remove(e)
-                e.days_alive +=1
-                print(e.days_alive)
+                if e.food_consumed < 1:
+                    e.food_consumed = 0
+                    logging.info("Killing Blob (Reason: Starvation)")
+                    blobs.remove(e)
+                    e.days_alive +=1
                 if e.days_alive > e.lifespan:
                     logging.info("Killing Blob (Reason: Old Age)")
                     blobs.remove(e)
