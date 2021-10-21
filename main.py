@@ -12,8 +12,8 @@ pygame.init()
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
 DAYS = 0
+GAME_TITLE = "The Evolution Game    DAY: "
 MUTATION_PERCENTAGE = .10
-
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
 
@@ -38,8 +38,7 @@ class Blob:
 
     def __repr__(self):
         return (
-            f"Blob({self.x}, {self.y}, {self.speed}, {self.num_days_without_food}, {self.sense},"
-            f"{self.num_babies}, {self.lifespan})"
+            f"Blob({self.speed}, {self.sense})"
         )
 
     def makeBaby(self):
@@ -97,6 +96,7 @@ clock = pygame.time.Clock()
 running = True
 logging.info("creating game loops")
 while running:
+    pygame.display.set_caption(f"{GAME_TITLE} {DAYS}")
     clock.tick(60)
 
     screen.fill((0, 0, 0))
@@ -136,19 +136,20 @@ while running:
                     e.food_consumed = 0
                     logging.info("Killing Blob (Reason: Starvation)")
                     blobs.remove(e)
-                    e.days_alive +=1
+                    e.days_alive += 1
                 if e.days_alive > e.lifespan:
                     logging.info("Killing Blob (Reason: Old Age)")
                     blobs.remove(e)
                 if e.food_consumed == 1:
                     e.food_consumed = 0
                 if e.food_consumed > 1:
-                    Baby_Blob = e.makeBaby()
+                    for _ in range(e.food_consumed // 2):
+                        blobs.append(e.makeBaby())
                     logging.info("Generating New Blob")
-                    blobs.append(Baby_Blob)
                     e.food_consumed = 0
             logging.info(DAYS)
             DAYS += 1
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
