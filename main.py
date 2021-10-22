@@ -183,7 +183,7 @@ if __name__ == "__main__":
                     continue
                 elif e.food_consumed > 1:
                     for _ in range(e.food_consumed // 2):
-                        blobs.append(e.make_baby())
+                        blobs.add(e.make_baby())
                     logging.info(f"Generated {e.food_consumed // 2} new blobs")
                 e.food_consumed = 0
                 e.days_alive += 1
