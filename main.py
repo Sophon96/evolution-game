@@ -136,11 +136,14 @@ if __name__ == "__main__":
     foods = pygame.sprite.Group(
         *[Food(random.randint(50, 850), random.randint(50, 750)) for _ in range(9)]
     )
+    logging.info("Created blobs and foods groups")
 
     clock = pygame.time.Clock()
     days = 0
     running = True
+    logging.info("Entering main game loop")
     while running:
+        pygame.display.set_caption(f"The Evolution Game - Days: {days}")
         clock.tick(60)
 
         screen.fill((0, 0, 0))
@@ -172,13 +175,18 @@ if __name__ == "__main__":
                 if e.food_consumed < 1:
                     e.food_consumed = 0
                     e.kill()
+                    logging.info("Killed Blob (Reason: Starvation)")
                     continue
-                elif e.food_consumed == 1:
-                    e.food_consumed = 0
+                if e.days_alive > e.lifespan:
+                    e.kill()
+                    logging.info("Killed Blob (Reason: Old Age)")
+                    continue
                 elif e.food_consumed > 1:
-                    baby_blob = e.make_baby()
-                    blobs.add(baby_blob)
+                    for _ in range(e.food_consumed // 2):
+                        blobs.append(e.make_baby())
+                    logging.info(f"Generated {e.food_consumed // 2} new blobs")
                 e.food_consumed = 0
+                e.days_alive += 1
 
             foods = pygame.sprite.Group(
                 *[
@@ -186,6 +194,12 @@ if __name__ == "__main__":
                     for _ in range(9)
                 ]
             )
+            
+            logging.info(f"Day {day} blobs: ")
+                for LOL in blobs:
+                    logging.info(LOL)
+
+            logging.info(f"End of day {day}")
             days += 1
 
         for event in pygame.event.get():
@@ -197,4 +211,3 @@ if __name__ == "__main__":
                 break
 
         pygame.display.update()
-
