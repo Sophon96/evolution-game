@@ -195,11 +195,11 @@ if __name__ == "__main__":
                 ]
             )
             
-            logging.info(f"Day {day} blobs: ")
-                for LOL in blobs:
-                    logging.info(LOL)
+            logging.info(f"Day {days} blobs: ")
+            for LOL in blobs:
+                logging.info(LOL)
 
-            logging.info(f"End of day {day}")
+            logging.info(f"End of day {days}")
             days += 1
 
         for event in pygame.event.get():
