@@ -1,13 +1,19 @@
 import pygame
 import random
 import numpy as np
+import logging
+
+logging.basicConfig(filename='log_info.log', level=logging.INFO,
+                    format='%(asctime)s:%(levelname)s:%(message)s')
 
 pygame.init()
 
 # Constants
 FOOD_PIC = pygame.image.load("assets/food.png")
 BLOB_PIC = pygame.image.load("assets/blob.png")
-MUTATION_PERCENTAGE = 0.10
+DAYS = 0
+GAME_TITLE = "The Evolution Game    DAY: "
+MUTATION_PERCENTAGE = .10
 
 screen = pygame.display.set_mode((900, 800))
 pygame.display.set_caption("The Evolution Game")
@@ -25,6 +31,7 @@ class Blob(pygame.sprite.Sprite):
         lifespan=5,
         food_consumed=0,
         *groups: pygame.sprite.AbstractGroup,
+        days_alive=0
     ):
         super().__init__(*groups)
         self.image = BLOB_PIC
@@ -39,6 +46,8 @@ class Blob(pygame.sprite.Sprite):
         self.speed = speed
         self.lifespan = lifespan
         self.food_consumed = food_consumed
+        self.days_alive = days_alive
+
 
     def __repr__(self):
         return (
@@ -179,11 +188,12 @@ if __name__ == "__main__":
             )
             days += 1
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                for LOL in blobs:
-                    print(LOL)
-                running = False
-                break
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            logging.info("FINAL BLOBS: ")
+            for LOL in blobs:
+                logging.info(LOL)
+            running = False
+            break
 
-        pygame.display.update()
+    pygame.display.update()
