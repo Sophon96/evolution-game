@@ -188,12 +188,13 @@ if __name__ == "__main__":
             )
             days += 1
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            logging.info("FINAL BLOBS: ")
-            for LOL in blobs:
-                logging.info(LOL)
-            running = False
-            break
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                logging.info("FINAL BLOBS: ")
+                for LOL in blobs:
+                    logging.info(LOL)
+                running = False
+                break
 
-    pygame.display.update()
+        pygame.display.update()
+
