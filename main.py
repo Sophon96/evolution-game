@@ -144,7 +144,7 @@ if __name__ == "__main__":
     logging.info("Entering main game loop")
     while running:
         pygame.display.set_caption(f"The Evolution Game - Days: {days}")
-        clock.tick(60)
+        #clock.tick(60)
 
         screen.fill((0, 0, 0))
 
@@ -177,14 +177,14 @@ if __name__ == "__main__":
                     e.kill()
                     logging.info("Killed Blob (Reason: Starvation)")
                     continue
-                if e.days_alive > e.lifespan:
-                    e.kill()
-                    logging.info("Killed Blob (Reason: Old Age)")
-                    continue
                 elif e.food_consumed > 1:
                     for _ in range(e.food_consumed // 2):
                         blobs.add(e.make_baby())
                     logging.info(f"Generated {e.food_consumed // 2} new blobs")
+                if e.days_alive > e.lifespan:
+                    e.kill()
+                    logging.info("Killed Blob (Reason: Old Age)")
+                    continue
                 e.food_consumed = 0
                 e.days_alive += 1
 
